@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1034038027921",
+    "project_id": "my-ladraa-chat",
+    "storage_bucket": "my-ladraa-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034038027921:android:c770b3495fa7b9da940130",
+        "android_client_info": {
+          "package_name": "com.example.my_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1034038027921-ma2n5ttlsl13g8au0cbko08j0rqcba8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8hyIE7hejldvOvCGXj4O4lYjUUMA3ItY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1034038027921-ma2n5ttlsl13g8au0cbko08j0rqcba8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
