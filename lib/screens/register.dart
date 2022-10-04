@@ -11,18 +11,21 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyRegisterState extends State<MyRegister> {
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   late String email;
   late String password;
   late String name;
 
   void signupWithEmailAndPassword() async {
     try {
-      UserCredential userCred = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCred = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       if (userCred.user != null) {
+        await userCred.user?.updateDisplayName(name);
         Navigator.pushNamed(context, MyChat.chatId);
-        print(userCred.user?.email);
       }
     } catch (e) {
       showDialog(
@@ -70,6 +73,7 @@ class _MyRegisterState extends State<MyRegister> {
                   top: MediaQuery.of(context).size.height * 0.27),
               child: Column(children: [
                 TextField(
+                  onChanged: (value) => name = value,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -87,6 +91,7 @@ class _MyRegisterState extends State<MyRegister> {
                   height: 30,
                 ),
                 TextField(
+                  onChanged: (value) => email = value,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -104,6 +109,7 @@ class _MyRegisterState extends State<MyRegister> {
                   height: 30,
                 ),
                 TextField(
+                  onChanged: (value) => password = value,
                   obscureText: true,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
