@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_chat/constants/constants.dart';
 import 'package:my_chat/screens/login.dart';
 import 'package:my_chat/screens/register.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+// brown FBB348  ;; grey 88A1E2
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -46,19 +50,18 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('images/login.png'), fit: BoxFit.cover),
+    return Stack(children: [
+      SvgPicture.asset(
+        'images/waves.svg',
+        fit: BoxFit.cover,
       ),
-      child: Scaffold(
+      Scaffold(
         backgroundColor: Colors.transparent,
         appBar: null,
         body: Padding(
@@ -67,55 +70,74 @@ class _MyHomePageState extends State<MyHomePage>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SlideTransition(
-                  position: textAnimation,
-                  child: const Padding(
-                    padding: EdgeInsets.only(bottom: 120.0),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Ladraa Chat',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 40.0,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 60.0),
+                  child: SlideTransition(
+                      position: textAnimation,
+                      child: const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          'Ladraa Chat',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 40.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black45,
+                          ),
                         ),
+                      )),
+                ),
+              ),
+              Expanded(
+                flex: 6,
+                child: SlideTransition(
+                  position: gifAnimation,
+                  child: Image.asset(
+                    "images/conference.gif",
+                    // height: 300.0,
+                    // width: 300.0,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    RawMaterialButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, MyRegister.registerId);
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      fillColor: kOrange,
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  )),
-              SlideTransition(
-                position: gifAnimation,
-                child: Image.asset(
-                  "images/conference.gif",
-                  height: 300.0,
-                  width: 300.0,
+                    RawMaterialButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, MyLogin.loginId);
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      fillColor: kBlueGrey,
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              RawMaterialButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, MyRegister.registerId);
-                },
-                fillColor: const Color(0xff4c505b),
-                child: const Text(
-                  'Register',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              RawMaterialButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, MyLogin.loginId);
-                },
-                fillColor: const Color(0xff68CAF0),
-                child: const Text(
-                  'Login',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              )
             ],
           ),
         ),
       ),
-    );
+    ]);
   }
 }

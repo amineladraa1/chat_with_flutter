@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_chat/screens/chat.dart';
+import 'package:my_chat/api/api_firebase.dart';
+import 'package:my_chat/constants/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyLogin extends StatefulWidget {
   static String loginId = 'MyLogin';
@@ -11,147 +12,106 @@ class MyLogin extends StatefulWidget {
 }
 
 class _MyLoginState extends State<MyLogin> {
-  FirebaseAuth auth = FirebaseAuth.instance;
+  FireApi api = FireApi();
   late String email;
   late String password;
 
-  void signinWithEmailAndPassword() async {
-    try {
-      UserCredential credenial = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      if (credenial.user != null) {
-        Navigator.pushNamed(context, MyChat.chatId);
-      }
-    } catch (e) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text(
-                'Attention',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              content: Text(e.toString()),
-            );
-          });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('images/login.png'), fit: BoxFit.cover),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(children: [
-          Container(
-            padding: const EdgeInsets.only(left: 35, top: 80),
-            child: const Text(
-              "Welcome\nBack",
-              style: TextStyle(color: Colors.white, fontSize: 33),
-            ),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(children: [
+        SvgPicture.asset(
+          'images/waves.svg',
+          fit: BoxFit.cover,
+        ),
+        Container(
+          padding: const EdgeInsets.only(left: 35, top: 80),
+          child: const Text(
+            "Welcome\nBack",
+            style: TextStyle(color: Colors.white, fontSize: 33),
           ),
-          SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.only(
-                  right: 35,
-                  left: 35,
-                  top: MediaQuery.of(context).size.height * 0.5),
-              child: Column(children: [
-                TextField(
-                  onChanged: (value) => email = value,
-                  decoration: InputDecoration(
-                    fillColor: Colors.grey.shade100,
-                    filled: true,
-                    hintText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+        ),
+        SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(
+                right: 35,
+                left: 35,
+                top: MediaQuery.of(context).size.height * 0.5),
+            child: Column(children: [
+              TextField(
+                onChanged: (value) => email = value,
+                decoration: kLoginDecoration.copyWith(hintText: 'Email'),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              TextField(
+                onChanged: (value) => password = value,
+                obscureText: true,
+                decoration: kLoginDecoration.copyWith(hintText: 'Password'),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Sign In',
+                    style: TextStyle(
+                      color: kBlueGrey,
+                      fontSize: 27,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: kBlueGrey,
+                    child: IconButton(
+                      color: Colors.white,
+                      onPressed: () {
+                        api.signinWithEmailAndPassword(
+                            email, password, context);
+                      },
+                      icon: const Icon(Icons.arrow_forward),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'register');
+                  },
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontSize: 18,
+                      color: kBlueGrey,
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                TextField(
-                  onChanged: (value) => password = value,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    fillColor: Colors.grey.shade100,
-                    filled: true,
-                    hintText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Forgot Password',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontSize: 18,
+                      color: kBlueGrey,
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Sign In',
-                      style: TextStyle(
-                        color: Color(0xff4c505b),
-                        fontSize: 27,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundColor: const Color(0xff4c505b),
-                      child: IconButton(
-                        color: Colors.white,
-                        onPressed: () {
-                          signinWithEmailAndPassword();
-                        },
-                        icon: const Icon(Icons.arrow_forward),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'register');
-                        },
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: 18,
-                            color: Color(0xff4c505b),
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          'Forgot Password',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: 18,
-                            color: Color(0xff4c505b),
-                          ),
-                        ),
-                      ),
-                    ]),
               ]),
-            ),
+            ]),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }

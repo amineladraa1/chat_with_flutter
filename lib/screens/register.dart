@@ -1,180 +1,119 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_chat/screens/chat.dart';
+import 'package:my_chat/api/api_firebase.dart';
+// ignore: depend_on_referenced_packages
+import 'package:my_chat/constants/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyRegister extends StatefulWidget {
   static String registerId = 'MyRegister';
   const MyRegister({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyRegisterState createState() => _MyRegisterState();
 }
 
 class _MyRegisterState extends State<MyRegister> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  FireApi api = FireApi();
   late String email;
   late String password;
   late String name;
 
-  void signupWithEmailAndPassword() async {
-    try {
-      UserCredential userCred = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      if (userCred.user != null) {
-        await userCred.user?.updateDisplayName(name);
-        Navigator.pushNamed(context, MyChat.chatId);
-      }
-    } catch (e) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text(
-                'Attention',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-              content: Text(e.toString()),
-            );
-          });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('images/register.png'), fit: BoxFit.cover),
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(children: [
+        Container(
+          constraints: const BoxConstraints(
+            maxHeight: double.infinity,
+            minHeight: double.infinity,
+          ),
+          child: SvgPicture.asset(
+            'images/wave.svg',
+            fit: BoxFit.fill,
+          ),
         ),
-        backgroundColor: Colors.transparent,
-        body: Stack(children: [
-          Container(
-            padding: const EdgeInsets.only(left: 35, top: 80),
-            child: const Text(
-              "Create\nAccount",
-              style: TextStyle(color: Colors.white, fontSize: 33),
-            ),
+        Container(
+          padding: const EdgeInsets.only(left: 35, top: 120),
+          child: const Text(
+            "Create\nAccount",
+            style: TextStyle(color: Colors.white, fontSize: 33),
           ),
-          SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.only(
-                  right: 35,
-                  left: 35,
-                  top: MediaQuery.of(context).size.height * 0.27),
-              child: Column(children: [
-                TextField(
-                  onChanged: (value) => name = value,
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                    hintText: 'Name',
-                    hintStyle: const TextStyle(color: Colors.white),
+        ),
+        SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(
+                right: 35,
+                left: 35,
+                top: MediaQuery.of(context).size.height * 0.27),
+            child: Column(children: [
+              TextField(
+                onChanged: (value) => name = value,
+                decoration: kRegisterInput.copyWith(hintText: 'name'),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              TextField(
+                onChanged: (value) => email = value,
+                decoration: kRegisterInput.copyWith(hintText: 'email'),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              TextField(
+                onChanged: (value) => password = value,
+                obscureText: true,
+                decoration: kRegisterInput.copyWith(hintText: 'password'),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                const Text(
+                  'Sign In',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 27,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                TextField(
-                  onChanged: (value) => email = value,
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                    hintText: 'Email',
-                    hintStyle: const TextStyle(color: Colors.white),
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: kBlueGrey,
+                  child: IconButton(
+                    color: Colors.white,
+                    onPressed: () {
+                      api.signupWithEmailAndPassword(
+                          email, password, name, context);
+                    },
+                    icon: const Icon(Icons.arrow_forward),
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                TextField(
-                  onChanged: (value) => password = value,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                    hintText: 'Password',
-                    hintStyle: const TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 27,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: const Color(0xff4c505b),
-                        child: IconButton(
-                          color: Colors.white,
-                          onPressed: () {
-                            signupWithEmailAndPassword();
-                          },
-                          icon: const Icon(Icons.arrow_forward),
-                        ),
-                      ),
-                    ]),
-                const SizedBox(
-                  height: 40,
-                ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'login');
-                        },
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ]),
               ]),
-            ),
+              const SizedBox(
+                height: 40,
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'login');
+                  },
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ]),
+            ]),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }

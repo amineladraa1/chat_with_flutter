@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_chat/screens/chat.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:my_chat/screens/login.dart';
 import 'package:my_chat/screens/my_home_page.dart';
 import 'package:my_chat/screens/register.dart';
+import 'package:my_chat/screens/users.dart';
 import 'firebase_options.dart';
 
 void main() {
@@ -37,7 +37,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         MyLogin.loginId: (context) => const MyLogin(),
         MyRegister.registerId: (context) => const MyRegister(),
-        MyChat.chatId: (context) => const MyChat(),
+        // MyChat.chatId: (context) =>  MyChat(),
+        MyUsers.usersId: (context) => const MyUsers(),
       },
       title: 'Flutter Demo',
       home: const MyHomePage(),
