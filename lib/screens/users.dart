@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:my_chat/screens/chat.dart';
+import 'package:my_chat/constants/constants.dart';
+import 'package:my_chat/services/chat_brain.dart';
 
 import 'package:my_chat/util.dart';
 
 class MyUsers extends StatelessWidget {
   static String usersId = 'MyUsers';
-  const MyUsers({super.key});
-
+  List<String> months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+  MyUsers({super.key});
+  ChatBrain chatBrain = ChatBrain();
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-          title: const Text('Users'),
+          systemOverlayStyle: const SystemUiOverlayStyle(),
+          backgroundColor: kBlueGrey,
+          title: const Text('All Users'),
         ),
         body: StreamBuilder<List<types.User>>(
           stream: FirebaseChatCore.instance.users(),
@@ -37,19 +40,32 @@ class MyUsers extends StatelessWidget {
 
                 return GestureDetector(
                   onTap: () {
-                    _handlePressed(user, context);
+                    chatBrain.handlePressed(user, context);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    child: Row(
-                      children: [
-                        _buildAvatar(user),
-                        Text(getUserName(user)),
-                      ],
-                    ),
+                    child: ListTile(
+                        mouseCursor: MouseCursor.defer,
+                        leading: chatBrain.buildAvatar(EdgeInsets.zero,
+                            const EdgeInsets.only(right: 10), 0.0, user,25.0),
+                        title:Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(getUserName(user)),
+                            Text(
+                              'last Seen  ${DateTime.fromMillisecondsSinceEpoch(user.lastSeen!).day} ${months[DateTime.fromMillisecondsSinceEpoch(user.lastSeen!).month-1]}',
+                              style: const TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.black45,
+                              ),
+                            )
+                          ],
+                        )
+                       ),
                   ),
                 );
               },
@@ -57,39 +73,4 @@ class MyUsers extends StatelessWidget {
           },
         ),
       );
-
-  Widget _buildAvatar(types.User user) {
-    final color = getUserAvatarNameColor(user);
-    final hasImage = user.imageUrl != null;
-    final name = getUserName(user);
-
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      child: CircleAvatar(
-        backgroundColor: hasImage ? Colors.transparent : color,
-        backgroundImage: hasImage ? NetworkImage(user.imageUrl!) : null,
-        radius: 20,
-        child: !hasImage
-            ? Text(
-                name.isEmpty ? '' : name[0].toUpperCase(),
-                style: const TextStyle(color: Colors.white),
-              )
-            : null,
-      ),
-    );
-  }
-
-  void _handlePressed(types.User otherUser, BuildContext context) async {
-    final navigator = Navigator.of(context);
-    final room = await FirebaseChatCore.instance.createRoom(otherUser);
-
-    navigator.pop();
-    await navigator.push(
-      MaterialPageRoute(
-        builder: (context) => MyChat(
-          room: room,
-        ),
-      ),
-    );
-  }
 }

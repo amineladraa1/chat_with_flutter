@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_chat/api/api_firebase.dart';
 import 'package:my_chat/constants/constants.dart';
@@ -19,7 +20,7 @@ class _MyLoginState extends State<MyLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: kIsWeb ? Colors.transparent : Colors.white,
       body: Stack(children: [
         SvgPicture.asset(
           'images/waves.svg',

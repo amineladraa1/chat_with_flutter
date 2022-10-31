@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_chat/constants/constants.dart';
 import 'package:my_chat/screens/login.dart';
@@ -62,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage>
         fit: BoxFit.cover,
       ),
       Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: kIsWeb ? Colors.transparent : Colors.white,
         appBar: null,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_chat/api/api_firebase.dart';
 // ignore: depend_on_referenced_packages
@@ -22,7 +23,7 @@ class _MyRegisterState extends State<MyRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: kIsWeb ? Colors.transparent : Colors.white,
       body: Stack(children: [
         Container(
           constraints: const BoxConstraints(

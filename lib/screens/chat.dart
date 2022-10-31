@@ -1,23 +1,24 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:mime/mime.dart';
-// ignore: import_of_legacy_library_into_null_safe
-// import 'package:open_file/open_file.dart';
 import 'package:http/http.dart' as http;
-
-// import 'package:path/path.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_chat/constants/constants.dart';
+import 'package:my_chat/services/chat_brain.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../util.dart';
 
 class MyChat extends StatefulWidget {
   static String chatId = 'MyChat';
   final types.Room room;
-  const MyChat({Key? key, required this.room}) : super(key: key);
+  final types.User otherUser;
+  const MyChat({Key? key, required this.room, required this.otherUser})
+      : super(key: key);
 
   @override
   State<MyChat> createState() => _MyChatState();
@@ -25,12 +26,47 @@ class MyChat extends StatefulWidget {
 
 class _MyChatState extends State<MyChat> {
   bool _isAttachmentUploading = false;
+  ChatBrain chatBrain = ChatBrain();
+  List<String> months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xff4c505b),
-        title: const Text(''),
+        systemOverlayStyle: const SystemUiOverlayStyle(),
+        backgroundColor: kBlueGrey,
+        elevation: 1,
+        leading: chatBrain.buildAvatar(const EdgeInsets.only(left: 20.0),
+            EdgeInsets.zero, 15.5, widget.otherUser, 15.0),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              getUserName(widget.otherUser),
+              style: const TextStyle(fontSize: 16.0),
+            ),
+            Text(
+              'last Seen  ${DateTime.fromMillisecondsSinceEpoch(widget.otherUser.lastSeen!).day} ${months[DateTime.fromMillisecondsSinceEpoch(widget.otherUser.lastSeen!).month - 1]}',
+              style: const TextStyle(
+                fontSize: 12.0,
+                color: Colors.white54,
+              ),
+            )
+          ],
+        ),
       ),
       body: StreamBuilder<types.Room>(
           initialData: widget.room,
@@ -38,9 +74,13 @@ class _MyChatState extends State<MyChat> {
           builder: (context, snapshot) => StreamBuilder<List<types.Message>>(
               stream: FirebaseChatCore.instance.messages(snapshot.data!),
               builder: ((context, snapshot) => Chat(
+                    showUserAvatars: true,
+                    showUserNames: true,
+                    theme: const DefaultChatTheme(
+                        inputBackgroundColor: kBlueGrey, primaryColor: kOrange),
                     isAttachmentUploading: _isAttachmentUploading,
                     messages: snapshot.data ?? [],
-                    onAttachmentPressed: _handleAtachmentPressed,
+                    onAttachmentPressed: _handleImageSelection,
                     onMessageTap: _handleMessageTap,
                     onPreviewDataFetched: _handlePreviewDataFetched,
                     onSendPressed: _handleSendPressed,
@@ -51,80 +91,6 @@ class _MyChatState extends State<MyChat> {
     );
   }
 
-  void _handleAtachmentPressed() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) => SafeArea(
-        child: SizedBox(
-          height: 144,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _handleImageSelection();
-                },
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Photo'),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _handleFileSelection();
-                },
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('File'),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Cancel'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _handleFileSelection() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.any,
-    );
-
-    if (result != null && result.files.single.path != null) {
-      _setAttachmentUploading(true);
-      final name = result.files.single.name;
-      final filePath = result.files.single.path!;
-      final file = File(filePath);
-
-      try {
-        final reference = FirebaseStorage.instance.ref(name);
-        await reference.putFile(file);
-        final uri = await reference.getDownloadURL();
-
-        final message = types.PartialFile(
-          mimeType: lookupMimeType(filePath),
-          name: name,
-          size: result.files.single.size,
-          uri: uri,
-        );
-
-        FirebaseChatCore.instance.sendMessage(message, widget.room.id);
-        _setAttachmentUploading(false);
-      } finally {
-        _setAttachmentUploading(false);
-      }
-    }
-  }
-
   void _handleImageSelection() async {
     final pickedImage = await ImagePicker().pickImage(
       imageQuality: 70,
@@ -133,13 +99,6 @@ class _MyChatState extends State<MyChat> {
     );
     if (pickedImage != null) {
       _setAttachmentUploading(true);
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return AlertDialog(
-      //         content: Image.network(result.path),
-      //       );
-      //     });
 
       final file = File(pickedImage.path);
       final size = file.lengthSync();
@@ -201,8 +160,6 @@ class _MyChatState extends State<MyChat> {
           );
         }
       }
-
-      // await OpenFile.open(localPath);
     }
   }
 
