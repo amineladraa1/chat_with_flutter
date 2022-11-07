@@ -27,20 +27,7 @@ class MyChat extends StatefulWidget {
 class _MyChatState extends State<MyChat> {
   bool _isAttachmentUploading = false;
   ChatBrain chatBrain = ChatBrain();
-  List<String> months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +46,14 @@ class _MyChatState extends State<MyChat> {
               style: const TextStyle(fontSize: 16.0),
             ),
             Text(
-              'last Seen  ${DateTime.fromMillisecondsSinceEpoch(widget.otherUser.lastSeen!).day} ${months[DateTime.fromMillisecondsSinceEpoch(widget.otherUser.lastSeen!).month - 1]}',
+              chatBrain.lastSeenBuilder(
+                  DateTime.fromMillisecondsSinceEpoch(
+                          widget.otherUser.lastSeen!)
+                      .day,
+                  DateTime.fromMillisecondsSinceEpoch(
+                              widget.otherUser.lastSeen!)
+                          .month -
+                      1),
               style: const TextStyle(
                 fontSize: 12.0,
                 color: Colors.white54,
@@ -84,6 +78,7 @@ class _MyChatState extends State<MyChat> {
                     onMessageTap: _handleMessageTap,
                     onPreviewDataFetched: _handlePreviewDataFetched,
                     onSendPressed: _handleSendPressed,
+                    bubbleBuilder: chatBrain.bubbleBuilder,
                     user: types.User(
                       id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
                     ),

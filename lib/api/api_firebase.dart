@@ -46,7 +46,7 @@ class FireApi {
           types.User(
             firstName: name,
             id: userCred.user!.uid, // UID from Firebase Authentication
-            // imageUrl: 'https://i.pravatar.cc/300',
+
             lastName: 'picasso',
           ),
         );

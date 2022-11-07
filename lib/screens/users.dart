@@ -9,7 +9,7 @@ import 'package:my_chat/util.dart';
 
 class MyUsers extends StatelessWidget {
   static String usersId = 'MyUsers';
-  List<String> months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+
   MyUsers({super.key});
   ChatBrain chatBrain = ChatBrain();
   @override
@@ -50,22 +50,28 @@ class MyUsers extends StatelessWidget {
                     child: ListTile(
                         mouseCursor: MouseCursor.defer,
                         leading: chatBrain.buildAvatar(EdgeInsets.zero,
-                            const EdgeInsets.only(right: 10), 0.0, user,25.0),
-                        title:Column(
+                            const EdgeInsets.only(right: 10), 0.0, user, 25.0),
+                        title: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(getUserName(user)),
                             Text(
-                              'last Seen  ${DateTime.fromMillisecondsSinceEpoch(user.lastSeen!).day} ${months[DateTime.fromMillisecondsSinceEpoch(user.lastSeen!).month-1]}',
+                              chatBrain.lastSeenBuilder(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                          user.lastSeen!)
+                                      .day,
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                              user.lastSeen!)
+                                          .month -
+                                      1),
                               style: const TextStyle(
                                 fontSize: 12.0,
                                 color: Colors.black45,
                               ),
                             )
                           ],
-                        )
-                       ),
+                        )),
                   ),
                 );
               },

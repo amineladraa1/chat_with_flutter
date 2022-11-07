@@ -57,88 +57,90 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      SvgPicture.asset(
-        'images/waves.svg',
-        fit: BoxFit.cover,
-      ),
-      Scaffold(
-        backgroundColor: kIsWeb ? Colors.transparent : Colors.white,
-        appBar: null,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 60.0),
-                  child: SlideTransition(
-                      position: textAnimation,
-                      child: const Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          'Ladraa Chat',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 40.0,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black45,
+    return Scaffold(
+      backgroundColor: kIsWeb ? Colors.transparent : Colors.white,
+      appBar: null,
+      body: Stack(
+        children: [
+          SvgPicture.asset(
+            'images/waves.svg',
+            fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 60.0),
+                    child: SlideTransition(
+                        position: textAnimation,
+                        child: const Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Ladraa Chat',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 40.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black45,
+                            ),
                           ),
-                        ),
-                      )),
-                ),
-              ),
-              Expanded(
-                flex: 6,
-                child: SlideTransition(
-                  position: gifAnimation,
-                  child: Image.asset(
-                    "images/conference.gif",
-                    // height: 300.0,
-                    // width: 300.0,
+                        )),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    RawMaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, MyRegister.registerId);
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      fillColor: kOrange,
-                      child: const Text(
-                        'Register',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                Expanded(
+                  flex: 6,
+                  child: SlideTransition(
+                    position: gifAnimation,
+                    child: Image.asset(
+                      "images/conference.gif",
+                      // height: 300.0,
+                      // width: 300.0,
                     ),
-                    RawMaterialButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, MyLogin.loginId);
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)),
-                      fillColor: kBlueGrey,
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              )
-            ],
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      RawMaterialButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, MyRegister.registerId);
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        fillColor: kOrange,
+                        child: const Text(
+                          'Register',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      RawMaterialButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, MyLogin.loginId);
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        fillColor: kBlueGrey,
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
+        ],
       ),
-    ]);
+    );
   }
 }
