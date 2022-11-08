@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import '../screens/users.dart';
+import 'package:my_chat/screens/rooms.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class FireApi {
@@ -14,7 +14,7 @@ class FireApi {
       UserCredential credenial = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (credenial.user != null) {
-        Navigator.pushNamed(context, MyUsers.usersId);
+        Navigator.pushNamed(context, MyRooms.roomsId);
       }
     } catch (e) {
       showDialog(
@@ -50,7 +50,7 @@ class FireApi {
             lastName: 'picasso',
           ),
         );
-        Navigator.pushNamed(context, MyUsers.usersId);
+        Navigator.pushNamed(context, MyRooms.roomsId);
       }
     } catch (e) {
       showDialog(

@@ -51,6 +51,7 @@ class ChatBrain {
   void handlePressed(types.User otherUser, BuildContext context) async {
     final navigator = Navigator.of(context);
     final room = await FirebaseChatCore.instance.createRoom(otherUser);
+    // final room = await FirebaseChatCore.instance.createGroupRoom(name: name, users: users);
 
     await navigator.push(
       MaterialPageRoute(
