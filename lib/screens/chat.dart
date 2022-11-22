@@ -11,13 +11,11 @@ import 'package:my_chat/constants/constants.dart';
 import 'package:my_chat/services/chat_brain.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../util.dart';
-
 class MyChat extends StatefulWidget {
   static String chatId = 'MyChat';
   final types.Room room;
-  final types.User otherUser;
-  const MyChat({Key? key, required this.room, required this.otherUser})
+  final List<types.User> otherUsers;
+  const MyChat({Key? key, required this.room, required this.otherUsers})
       : super(key: key);
 
   @override
@@ -27,6 +25,12 @@ class MyChat extends StatefulWidget {
 class _MyChatState extends State<MyChat> {
   bool _isAttachmentUploading = false;
   ChatBrain chatBrain = ChatBrain();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.otherUsers);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,30 +39,31 @@ class _MyChatState extends State<MyChat> {
         systemOverlayStyle: const SystemUiOverlayStyle(),
         backgroundColor: kBlueGrey,
         elevation: 1,
-        leading: chatBrain.buildAvatar(const EdgeInsets.only(left: 20.0),
-            EdgeInsets.zero, 15.5, widget.otherUser, 15.0),
+        // leading: chatBrain.buildAvatar(const EdgeInsets.only(left: 20.0),
+        //     EdgeInsets.zero, 15.5, widget.otherUser, 15.0),
         title: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
             Text(
-              getUserName(widget.otherUser),
-              style: const TextStyle(fontSize: 16.0),
+              // getUserName(widget.otherUser),
+              '',
+              style: TextStyle(fontSize: 16.0),
             ),
-            Text(
-              chatBrain.lastSeenBuilder(
-                  DateTime.fromMillisecondsSinceEpoch(
-                          widget.otherUser.lastSeen!)
-                      .day,
-                  DateTime.fromMillisecondsSinceEpoch(
-                              widget.otherUser.lastSeen!)
-                          .month -
-                      1),
-              style: const TextStyle(
-                fontSize: 12.0,
-                color: Colors.white54,
-              ),
-            )
+            // Text(
+            //   chatBrain.lastSeenBuilder(
+            //       DateTime.fromMillisecondsSinceEpoch(
+            //               widget.otherUser.lastSeen!)
+            //           .day,
+            //       DateTime.fromMillisecondsSinceEpoch(
+            //                   widget.otherUser.lastSeen!)
+            //               .month -
+            //           1),
+            //   style: const TextStyle(
+            //     fontSize: 12.0,
+            //     color: Colors.white54,
+            //   ),
+            // )
           ],
         ),
       ),

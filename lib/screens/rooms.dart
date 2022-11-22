@@ -6,6 +6,9 @@ import 'package:my_chat/screens/users.dart';
 import '../constants/constants.dart';
 import 'package:badges/badges.dart';
 
+import '../util.dart';
+import 'chat.dart';
+
 class MyRooms extends StatefulWidget {
   const MyRooms({Key? key}) : super(key: key);
   static String roomsId = 'MyRooms';
@@ -56,7 +59,14 @@ class _MyRoomsState extends State<MyRooms> {
                                 selectedIndex.add(index);
                               }
                             })
-                        : null,
+                        : (() => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyChat(
+                                      otherUsers: room.users,
+                                      room: room,
+                                    )))),
+
                     // todo : create a build avatar for the room
                     selectedTileColor: const Color.fromARGB(48, 158, 158, 158),
                     selectedColor: Colors.black54,
@@ -77,13 +87,17 @@ class _MyRoomsState extends State<MyRooms> {
                         width: 2.0,
                         color: Color.fromARGB(179, 158, 158, 158),
                       ),
-                      child: const CircleAvatar(
-                        backgroundColor: kOrange,
-                        radius: 25.0,
-                      ),
+                      child: customAvatar(room.users),
                     ),
                     title: Text(room.name ?? ''),
-                    subtitle: Text(room.createdAt.toString()),
+                    subtitle: Text(
+                      chatBrain.roomCreatedAtBuilder(
+                          DateTime.fromMillisecondsSinceEpoch(room.createdAt!)
+                              .day,
+                          DateTime.fromMillisecondsSinceEpoch(room.createdAt!)
+                                  .month -
+                              1),
+                    ),
                   );
                 }));
           })),

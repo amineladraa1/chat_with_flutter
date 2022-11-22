@@ -48,16 +48,17 @@ class ChatBrain {
     );
   }
 
-  void handlePressed(types.User otherUser, BuildContext context) async {
+  void handlePressed(
+      String name, List<types.User> users, BuildContext context) async {
     final navigator = Navigator.of(context);
-    final room = await FirebaseChatCore.instance.createRoom(otherUser);
-    // final room = await FirebaseChatCore.instance.createGroupRoom(name: name, users: users);
+    final room = await FirebaseChatCore.instance
+        .createGroupRoom(name: name, users: users);
 
     await navigator.push(
       MaterialPageRoute(
         builder: (context) => MyChat(
           room: room,
-          otherUser: otherUser,
+          otherUsers: users,
         ),
       ),
     );
@@ -65,6 +66,10 @@ class ChatBrain {
 
   String lastSeenBuilder(int day, int month) {
     return 'last Seen  $day ${_months[month]}';
+  }
+
+  String roomCreatedAtBuilder(int day, int month) {
+    return 'created at $day ${_months[month]}';
   }
 
   Widget bubbleBuilder(
