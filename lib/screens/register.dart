@@ -19,6 +19,7 @@ class _MyRegisterState extends State<MyRegister> {
   late String email;
   late String password;
   late String name;
+  late String lastname;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +51,9 @@ class _MyRegisterState extends State<MyRegister> {
                 top: MediaQuery.of(context).size.height * 0.27),
             child: Column(children: [
               TextField(
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
                 onChanged: (value) => name = value,
                 decoration: kRegisterInput.copyWith(hintText: 'name'),
               ),
@@ -57,6 +61,19 @@ class _MyRegisterState extends State<MyRegister> {
                 height: 30,
               ),
               TextField(
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+                onChanged: (value) => lastname = value,
+                decoration: kRegisterInput.copyWith(hintText: 'last name'),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              TextField(
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
                 onChanged: (value) => email = value,
                 decoration: kRegisterInput.copyWith(hintText: 'email'),
               ),
@@ -64,6 +81,9 @@ class _MyRegisterState extends State<MyRegister> {
                 height: 30,
               ),
               TextField(
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
                 onChanged: (value) => password = value,
                 obscureText: true,
                 decoration: kRegisterInput.copyWith(hintText: 'password'),
@@ -87,7 +107,7 @@ class _MyRegisterState extends State<MyRegister> {
                     color: Colors.white,
                     onPressed: () {
                       api.signupWithEmailAndPassword(
-                          email, password, name, context);
+                          email, password, name, lastname, context);
                     },
                     icon: const Icon(Icons.arrow_forward),
                   ),

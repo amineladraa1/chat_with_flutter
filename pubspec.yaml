@@ -49,6 +49,7 @@ dependencies:
   bubble: ^1.2.1
   badges: ^2.0.3
   modal_bottom_sheet: ^2.1.2
+  lottie: ^2.0.0
 
 dev_dependencies:
   flutter_test:

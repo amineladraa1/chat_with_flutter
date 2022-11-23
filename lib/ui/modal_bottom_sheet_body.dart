@@ -20,7 +20,7 @@ class ModalBottomSheetBody extends StatefulWidget {
 
 class _ModalBottomSheetBodyState extends State<ModalBottomSheetBody> {
   String name = '';
-
+  bool isInputChanged = false;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -60,6 +60,7 @@ class _ModalBottomSheetBodyState extends State<ModalBottomSheetBody> {
               ),
               TextField(
                 onChanged: ((value) => setState(() {
+                      isInputChanged = true;
                       name = value;
                     })),
                 decoration: kLoginDecoration.copyWith(
@@ -71,11 +72,13 @@ class _ModalBottomSheetBodyState extends State<ModalBottomSheetBody> {
               RawMaterialButton(
                 elevation: 0.0,
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
-                onPressed: () => widget.chatBrain
-                    .handlePressed(name, widget.selectedUsers, context),
+                onPressed: name.isEmpty
+                    ? null
+                    : () => widget.chatBrain
+                        .handlePressed(name, widget.selectedUsers, context),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
-                fillColor: kBlueGrey,
+                fillColor: name.isEmpty ? Colors.grey.shade200 : kBlueGrey,
                 child: const Text(
                   'create room',
                   style: TextStyle(color: Colors.white),

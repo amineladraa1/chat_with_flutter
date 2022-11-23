@@ -34,8 +34,8 @@ class FireApi {
   }
 
   ///////////////// signup Logic
-  void signupWithEmailAndPassword(
-      String email, String password, String name, BuildContext context) async {
+  void signupWithEmailAndPassword(String email, String password, String name,
+      String lastName, BuildContext context) async {
     try {
       UserCredential userCred = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -45,9 +45,10 @@ class FireApi {
         await FirebaseChatCore.instance.createUserInFirestore(
           types.User(
             firstName: name,
+
             id: userCred.user!.uid, // UID from Firebase Authentication
 
-            lastName: 'picasso',
+            lastName: lastName,
           ),
         );
         Navigator.pushNamed(context, MyRooms.roomsId);
