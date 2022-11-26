@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         MyLogin.loginId: (context) => const MyLogin(),
         MyRegister.registerId: (context) => const MyRegister(),
         // MyChat.chatId: (context) =>  MyChat(),
-        MyUsers.usersId: (context) => MyUsers(),
+        MyUsers.usersId: (context) => const MyUsers(),
         MyRooms.roomsId: (context) => const MyRooms(),
       },
       title: 'Flutter Demo',

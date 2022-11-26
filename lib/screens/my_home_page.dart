@@ -1,11 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:my_chat/constants/constants.dart';
 import 'package:my_chat/screens/login.dart';
-import 'package:my_chat/screens/register.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-// brown FBB348  ;; grey 88A1E2
+import '../ui/page_view1.dart';
+import '../ui/page_view2.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -14,133 +13,78 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> textAnimation;
-  late Animation<Offset> gifAnimation;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    textAnimation =
-        Tween<Offset>(begin: const Offset(0, 16.0), end: Offset.zero)
-            .animate(CurvedAnimation(
-                parent: _controller,
-                curve: const Interval(
-                  0,
-                  0.5,
-                  curve: Curves.elasticInOut,
-                )));
-    gifAnimation =
-        Tween<Offset>(begin: const Offset(16.0, 0.0), end: Offset.zero)
-            .animate(CurvedAnimation(
-                parent: _controller,
-                curve: const Interval(
-                  0.5,
-                  1,
-                  curve: Curves.elasticInOut,
-                )));
-    _controller.forward();
-    _controller.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
+class _MyHomePageState extends State<MyHomePage> {
+  final PageController _controller = PageController();
+  int _pageIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kIsWeb ? Colors.transparent : Colors.white,
-      appBar: null,
-      body: Stack(
-        children: [
-          SvgPicture.asset(
-            'images/waves.svg',
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 60.0),
-                    child: SlideTransition(
-                        position: textAnimation,
-                        child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            'Ladraa Chat',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 40.0,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black45,
-                            ),
-                          ),
-                        )),
-                  ),
+      body: Stack(children: [
+        PageView(
+            onPageChanged: (value) => setState(() {
+                  _pageIndex = value;
+                }),
+            controller: _controller,
+            children: const [
+              pageView1(),
+              pageView2(),
+            ]),
+        Align(
+          alignment: const Alignment(0.0, 0.7),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _pageIndex == 1
+                  ? IconButton(
+                      onPressed: () => setState(() {
+                        _controller.previousPage(
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeIn);
+                      }),
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                      ),
+                      iconSize: 25.0,
+                      color: kBlueGrey,
+                    )
+                  : const SizedBox(),
+              DotsIndicator(
+                dotsCount: 2,
+                position: _pageIndex.toDouble(),
+                decorator: DotsDecorator(
+                  size: const Size.square(9.0),
+                  activeSize: const Size(18.0, 9.0),
+                  activeShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0)),
                 ),
-                Expanded(
-                  flex: 6,
-                  child: SlideTransition(
-                    position: gifAnimation,
-                    child: Image.asset(
-                      "images/conference.gif",
-                      // height: 300.0,
-                      // width: 300.0,
+              ),
+              _pageIndex == 1
+                  ? TextButton(
+                      onPressed: () =>
+                          Navigator.pushNamed(context, MyLogin.loginId),
+                      child: const Text(
+                        'Done',
+                        style: TextStyle(
+                            color: kBlueGrey,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold),
+                      ))
+                  : IconButton(
+                      onPressed: () => setState(() {
+                        _controller.nextPage(
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeIn);
+                      }),
+                      icon: const Icon(
+                        Icons.arrow_forward_ios,
+                      ),
+                      iconSize: 25.0,
+                      color: kBlueGrey,
                     ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      RawMaterialButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, MyRegister.registerId);
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0)),
-                        fillColor: kOrange,
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      RawMaterialButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, MyLogin.loginId);
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0)),
-                        fillColor: kBlueGrey,
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 }

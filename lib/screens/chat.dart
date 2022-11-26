@@ -1,14 +1,16 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'dart:io';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:my_chat/constants/constants.dart';
 import 'package:my_chat/services/chat_brain.dart';
+import 'package:my_chat/ui/chat_app_bar.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MyChat extends StatefulWidget {
@@ -25,48 +27,11 @@ class MyChat extends StatefulWidget {
 class _MyChatState extends State<MyChat> {
   bool _isAttachmentUploading = false;
   ChatBrain chatBrain = ChatBrain();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print(widget.otherUsers);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(),
-        backgroundColor: kBlueGrey,
-        elevation: 1,
-        // leading: chatBrain.buildAvatar(const EdgeInsets.only(left: 20.0),
-        //     EdgeInsets.zero, 15.5, widget.otherUser, 15.0),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              // getUserName(widget.otherUser),
-              '',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            // Text(
-            //   chatBrain.lastSeenBuilder(
-            //       DateTime.fromMillisecondsSinceEpoch(
-            //               widget.otherUser.lastSeen!)
-            //           .day,
-            //       DateTime.fromMillisecondsSinceEpoch(
-            //                   widget.otherUser.lastSeen!)
-            //               .month -
-            //           1),
-            //   style: const TextStyle(
-            //     fontSize: 12.0,
-            //     color: Colors.white54,
-            //   ),
-            // )
-          ],
-        ),
-      ),
+      appBar: ChatAppBar(room: widget.room),
       body: StreamBuilder<types.Room>(
           initialData: widget.room,
           stream: FirebaseChatCore.instance.room(widget.room.id),

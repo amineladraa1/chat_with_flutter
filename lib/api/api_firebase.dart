@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:my_chat/screens/rooms.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class FireApi {
@@ -14,6 +15,7 @@ class FireApi {
       UserCredential credenial = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       if (credenial.user != null) {
+        // ignore: use_build_context_synchronously
         Navigator.pushNamed(context, MyRooms.roomsId);
       }
     } catch (e) {
@@ -51,6 +53,7 @@ class FireApi {
             lastName: lastName,
           ),
         );
+        // ignore: use_build_context_synchronously
         Navigator.pushNamed(context, MyRooms.roomsId);
       }
     } catch (e) {

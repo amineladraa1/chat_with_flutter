@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:my_chat/screens/users.dart';
@@ -23,6 +24,7 @@ class _MyRoomsState extends State<MyRooms> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: const Color(0xffFFAAC3).withAlpha(120),
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(),
         backgroundColor: kBlueGrey,
@@ -89,7 +91,10 @@ class _MyRoomsState extends State<MyRooms> {
                       ),
                       child: customAvatar(room.users),
                     ),
-                    title: Text(room.name ?? ''),
+                    title: Text(
+                      room.name ?? '',
+                      style: const TextStyle(color: Colors.black87),
+                    ),
                     subtitle: Text(
                       chatBrain.roomCreatedAtBuilder(
                           DateTime.fromMillisecondsSinceEpoch(room.createdAt!)

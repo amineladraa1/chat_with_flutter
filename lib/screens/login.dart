@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:my_chat/api/api_firebase.dart';
 import 'package:my_chat/constants/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_chat/screens/register.dart';
 
 class MyLogin extends StatefulWidget {
   static String loginId = 'MyLogin';
   const MyLogin({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyLoginState createState() => _MyLoginState();
 }
 
@@ -86,7 +88,7 @@ class _MyLoginState extends State<MyLogin> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'register');
+                    Navigator.pushNamed(context, MyRegister.registerId);
                   },
                   child: const Text(
                     'Sign Up',

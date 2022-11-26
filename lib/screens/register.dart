@@ -4,6 +4,7 @@ import 'package:my_chat/api/api_firebase.dart';
 // ignore: depend_on_referenced_packages
 import 'package:my_chat/constants/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_chat/screens/login.dart';
 
 class MyRegister extends StatefulWidget {
   static String registerId = 'MyRegister';
@@ -119,7 +120,7 @@ class _MyRegisterState extends State<MyRegister> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'login');
+                    Navigator.pushNamed(context, MyLogin.loginId);
                   },
                   child: const Text(
                     'Login',

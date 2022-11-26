@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:my_chat/constants/constants.dart';
@@ -27,6 +28,7 @@ class _MyUsersState extends State<MyUsers> {
   bool isLongedPressed = false;
   @override
   Widget build(BuildContext context) => Scaffold(
+
         appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(),
           backgroundColor: kBlueGrey,
@@ -57,7 +59,6 @@ class _MyUsersState extends State<MyUsers> {
                     selectedIndex.add(index);
                     isLongedPressed = true;
                     selectedUsers.add(user);
-                    print(selectedUsers);
                   }),
                   onTap: isLongedPressed == true
                       ? () => setState(() {
@@ -67,7 +68,6 @@ class _MyUsersState extends State<MyUsers> {
                             } else {
                               selectedIndex.add(index);
                               selectedUsers.add(user);
-                              print(selectedUsers);
                             }
                           })
                       : null,
