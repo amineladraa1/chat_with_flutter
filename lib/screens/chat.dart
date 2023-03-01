@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -27,6 +28,7 @@ class MyChat extends StatefulWidget {
 class _MyChatState extends State<MyChat> {
   bool _isAttachmentUploading = false;
   ChatBrain chatBrain = ChatBrain();
+  final currentUser = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +37,28 @@ class _MyChatState extends State<MyChat> {
       body: StreamBuilder<types.Room>(
           initialData: widget.room,
           stream: FirebaseChatCore.instance.room(widget.room.id),
-          builder: (context, snapshot) => StreamBuilder<List<types.Message>>(
-              stream: FirebaseChatCore.instance.messages(snapshot.data!),
-              builder: ((context, snapshot) => Chat(
-                    showUserAvatars: true,
-                    showUserNames: true,
-                    theme: const DefaultChatTheme(
-                        inputBackgroundColor: kBlueGrey, primaryColor: kOrange),
-                    isAttachmentUploading: _isAttachmentUploading,
-                    messages: snapshot.data ?? [],
-                    onAttachmentPressed: _handleImageSelection,
-                    onMessageTap: _handleMessageTap,
-                    onPreviewDataFetched: _handlePreviewDataFetched,
-                    onSendPressed: _handleSendPressed,
-                    bubbleBuilder: chatBrain.bubbleBuilder,
-                    user: types.User(
-                      id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
-                    ),
-                  )))),
+          builder: (context, snapshot) {
+            // final room = snapshot.data;
+            return StreamBuilder<List<types.Message>>(
+                stream: FirebaseChatCore.instance.messages(snapshot.data!),
+                builder: ((context, snapshot) => Chat(
+                      showUserAvatars: true,
+                      showUserNames: true,
+                      theme: const DefaultChatTheme(
+                          inputBackgroundColor: kBlueGrey,
+                          primaryColor: kOrange),
+                      isAttachmentUploading: _isAttachmentUploading,
+                      messages: snapshot.data ?? [],
+                      onAttachmentPressed: _handleImageSelection,
+                      onMessageTap: _handleMessageTap,
+                      onPreviewDataFetched: _handlePreviewDataFetched,
+                      onSendPressed: _handleSendPressed,
+                      bubbleBuilder: chatBrain.bubbleBuilder,
+                      user: types.User(
+                        id: FirebaseChatCore.instance.firebaseUser?.uid ?? '',
+                      ),
+                    )));
+          }),
     );
   }
 
@@ -119,6 +125,7 @@ class _MyChatState extends State<MyChat> {
           }
         } finally {
           final updatedMessage = message.copyWith(isLoading: false);
+
           FirebaseChatCore.instance.updateMessage(
             updatedMessage,
             widget.room.id,
@@ -137,7 +144,12 @@ class _MyChatState extends State<MyChat> {
     FirebaseChatCore.instance.updateMessage(updatedMessage, widget.room.id);
   }
 
+  List<String> unreadMessages = [];
   void _handleSendPressed(types.PartialText message) {
+    unreadMessages.add(message.text);
+    final updatedRoom = widget.room.copyWith(
+        metadata: {'unreadMessages': unreadMessages, 'userId': currentUser});
+    FirebaseChatCore.instance.updateRoom(updatedRoom);
     FirebaseChatCore.instance.sendMessage(
       message,
       widget.room.id,

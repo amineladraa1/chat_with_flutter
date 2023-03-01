@@ -1,14 +1,19 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:my_chat/screens/chat.dart';
 import 'package:my_chat/screens/users.dart';
 import '../constants/constants.dart';
 import 'package:badges/badges.dart';
 
 import '../util.dart';
-import 'chat.dart';
 
 class MyRooms extends StatefulWidget {
   const MyRooms({Key? key}) : super(key: key);
@@ -21,6 +26,8 @@ class MyRooms extends StatefulWidget {
 class _MyRoomsState extends State<MyRooms> {
   List<int> selectedIndex = [];
   bool isLongedPressed = false;
+  final currentUser = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +40,9 @@ class _MyRoomsState extends State<MyRooms> {
       ),
       body: StreamBuilder<List<types.Room>>(
           initialData: const [],
-          stream: FirebaseChatCore.instance.rooms(),
+          stream: _sortStreamByUpdatedAt(
+            FirebaseChatCore.instance.rooms(),
+          ),
           builder: ((context, snapshot) {
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Container(
@@ -44,10 +53,15 @@ class _MyRoomsState extends State<MyRooms> {
                 child: const Text('No rooms'),
               );
             }
+
             return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: ((context, index) {
                   final room = snapshot.data![index];
+                  print(room.updatedAt);
+                  final unreadMessage = room.metadata!['unreadMessages'].length;
+                  final unreadMessageUser = room.metadata!['userId'];
+
                   return ListTile(
                     onLongPress: () => setState(() {
                       selectedIndex.add(index);
@@ -61,18 +75,15 @@ class _MyRoomsState extends State<MyRooms> {
                                 selectedIndex.add(index);
                               }
                             })
-                        : (() => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MyChat(
-                                      otherUsers: room.users,
-                                      room: room,
-                                    )))),
+                        : (() => _onTap(room)),
 
                     // todo : create a build avatar for the room
                     selectedTileColor: const Color.fromARGB(48, 158, 158, 158),
                     selectedColor: Colors.black54,
-
+                    tileColor:
+                        unreadMessage > 0 && unreadMessageUser != currentUser
+                            ? const Color.fromARGB(48, 158, 158, 158)
+                            : null,
                     selected: selectedIndex.contains(index) ? true : false,
                     leading: Badge(
                       position: BadgePosition.bottomEnd(bottom: -4, end: -6),
@@ -93,16 +104,36 @@ class _MyRoomsState extends State<MyRooms> {
                     ),
                     title: Text(
                       room.name ?? '',
-                      style: const TextStyle(color: Colors.black87),
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontWeight:
+                              // ignore: iterable_contains_unrelated_type
+                              unreadMessage > 0 &&
+                                      unreadMessageUser != currentUser
+                                  ? FontWeight.w600
+                                  : null),
                     ),
-                    subtitle: Text(
-                      chatBrain.roomCreatedAtBuilder(
-                          DateTime.fromMillisecondsSinceEpoch(room.createdAt!)
-                              .day,
-                          DateTime.fromMillisecondsSinceEpoch(room.createdAt!)
-                                  .month -
-                              1),
-                    ),
+                    subtitle: unreadMessage > 0 &&
+                            unreadMessageUser != currentUser
+                        ? Text(
+                            '$unreadMessage New Messages',
+                            style: const TextStyle(
+                                color: Colors.red, fontWeight: FontWeight.w600),
+                          )
+                        : Text(chatBrain.roomCreatedAtBuilder(
+                            DateTime.fromMillisecondsSinceEpoch(room.createdAt!)
+                                .day,
+                            DateTime.fromMillisecondsSinceEpoch(room.createdAt!)
+                                    .month -
+                                1)),
+
+                    trailing:
+                        unreadMessage > 0 && unreadMessageUser != currentUser
+                            ? const Icon(
+                                Icons.wechat,
+                                color: Colors.red,
+                              )
+                            : const Text(''),
                   );
                 }));
           })),
@@ -118,4 +149,35 @@ class _MyRoomsState extends State<MyRooms> {
       ),
     );
   }
+
+  void _onTap(types.Room room) {
+    final updatedRoom =
+        room.copyWith(metadata: {'unreadMessages': [], 'userId': ''});
+    FirebaseChatCore.instance.updateRoom(updatedRoom);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyChat(
+                  otherUsers: room.users,
+                  room: room,
+                )));
+  }
+}
+
+Stream<List<types.Room>> _sortStreamByUpdatedAt(
+    Stream<List<types.Room>> stream) {
+  Stream<List<types.Room>> sortedStream = stream.transform(
+    StreamTransformer.fromHandlers(
+      handleData: (list, sink) {
+        List<types.Room> sortedList = list.toList();
+
+        sortedList.sort(
+            (a, b) => b.updatedAt!.toInt().compareTo(a.updatedAt!.toInt()));
+
+        sink.add(sortedList);
+      },
+    ),
+  );
+
+  return sortedStream;
 }

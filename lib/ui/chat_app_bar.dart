@@ -61,7 +61,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
     return AppBar(
       backgroundColor: kBlueGrey,
       elevation: 1,
-      leadingWidth: 150.0,
+      leadingWidth: (ceiling * 0.8 * 40),
       leading: SizedBox(
         // width: 200.0,
         child: Stack(

@@ -32,10 +32,10 @@ Widget customAvatar(List<types.User> users) {
   List<Widget> returnedWidget = [
     chatBrain.buildAvatar(
         EdgeInsets.zero, EdgeInsets.zero, 0.0, users[1], 25.0),
-    twoUsers(users[ceiling - 1], users[ceiling]),
-    threeUsers(users[ceiling >= 2 ? ceiling - 2 : 0], users[ceiling - 1],
+    _twoUsers(users[ceiling - 1], users[ceiling]),
+    _threeUsers(users[ceiling >= 2 ? ceiling - 2 : 0], users[ceiling - 1],
         users[ceiling]),
-    fourUsers(
+    _fourUsers(
         users[ceiling >= 3 ? ceiling - 3 : 0],
         users[ceiling >= 2 ? ceiling - 2 : 0],
         users[ceiling - 1],
@@ -44,7 +44,7 @@ Widget customAvatar(List<types.User> users) {
   return returnedWidget[ceiling - 1];
 }
 
-Container fourUsers(
+Container _fourUsers(
   types.User user1,
   types.User user2,
   types.User user3,
@@ -60,94 +60,44 @@ Container fourUsers(
           children: [
             Row(
               children: [
-                Container(
-                  height: 24.0,
-                  width: 25.0,
-                  decoration: BoxDecoration(
-                      image: user1.imageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(user1.imageUrl!))
-                          : null,
-                      color: colors[user1.id.hashCode % colors.length],
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(50.0),
-                      )),
-                  child: Center(
-                    child: Text(
-                      user1.firstName![0].toUpperCase(),
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 10.0),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 24.0,
-                  width: 25.0,
-                  decoration: BoxDecoration(
-                      image: user2.imageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(user2.imageUrl!))
-                          : null,
-                      color: colors[user2.id.hashCode % colors.length],
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(50.0),
-                      )),
-                  child: Center(
-                    child: Text(
-                      user2.firstName![0].toUpperCase(),
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 10.0),
-                    ),
-                  ),
-                ),
+                _usersContainer(
+                    user: user1,
+                    height: 24.0,
+                    width: 25.0,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(50.0),
+                    )),
+                _usersContainer(
+                    user: user2,
+                    height: 24.0,
+                    width: 25.0,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(50.0),
+                    )),
               ],
             ),
             Row(
               children: [
-                Container(
-                  height: 24.0,
-                  width: 25.0,
-                  decoration: BoxDecoration(
-                      image: user3.imageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(user3.imageUrl!))
-                          : null,
-                      color: colors[user3.id.hashCode % colors.length],
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(50.0),
-                      )),
-                  child: Center(
-                      child: Text(
-                    user3.firstName![0].toUpperCase(),
-                    style: const TextStyle(color: Colors.white, fontSize: 10.0),
-                  )),
-                ),
-                Container(
-                  height: 24.0,
-                  width: 25.0,
-                  decoration: BoxDecoration(
-                      image: user4.imageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(user4.imageUrl!))
-                          : null,
-                      color: colors[user4.id.hashCode % colors.length],
-                      borderRadius: const BorderRadius.only(
-                        bottomRight: Radius.circular(50.0),
-                      )),
-                  child: Center(
-                    child: Text(
-                      user4.firstName![0].toUpperCase(),
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 10.0),
-                    ),
-                  ),
-                ),
+                _usersContainer(
+                    user: user3,
+                    height: 24.0,
+                    width: 25.0,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(50.0),
+                    )),
+                _usersContainer(
+                    user: user4,
+                    height: 24.0,
+                    width: 25.0,
+                    borderRadius: const BorderRadius.only(
+                      bottomRight: Radius.circular(50.0),
+                    )),
               ],
             ),
           ],
         ));
 
-Container threeUsers(
+Container _threeUsers(
   types.User user1,
   types.User user2,
   types.User user3,
@@ -162,71 +112,34 @@ Container threeUsers(
           children: [
             Row(
               children: [
-                Container(
-                  height: 24.0,
-                  width: 25.0,
-                  decoration: BoxDecoration(
-                      image: user1.imageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(user1.imageUrl!))
-                          : null,
-                      color: colors[user1.id.hashCode % colors.length],
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(50.0),
-                      )),
-                  child: Center(
-                    child: Text(
-                      user1.firstName![0].toUpperCase(),
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 10.0),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 24.0,
-                  width: 25.0,
-                  decoration: BoxDecoration(
-                      image: user2.imageUrl != null
-                          ? DecorationImage(
-                              image: NetworkImage(user2.imageUrl!))
-                          : null,
-                      color: colors[user2.id.hashCode % colors.length],
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(50.0),
-                      )),
-                  child: Center(
-                    child: Text(
-                      user2.firstName![0].toUpperCase(),
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 10.0),
-                    ),
-                  ),
-                ),
+                _usersContainer(
+                    user: user1,
+                    height: 24.0,
+                    width: 25.0,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(50.0),
+                    )),
+                _usersContainer(
+                    user: user2,
+                    height: 24.0,
+                    width: 25.0,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(50.0),
+                    )),
               ],
             ),
-            Container(
-              height: 24.0,
-              width: 50.0,
-              decoration: BoxDecoration(
-                  image: user3.imageUrl != null
-                      ? DecorationImage(image: NetworkImage(user3.imageUrl!))
-                      : null,
-                  color: colors[user3.id.hashCode % colors.length],
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(50.0),
-                    bottomLeft: Radius.circular(50.0),
-                  )),
-              child: Center(
-                child: Text(
-                  user3.firstName![0].toUpperCase(),
-                  style: const TextStyle(color: Colors.white, fontSize: 10.0),
-                ),
-              ),
-            ),
+            _usersContainer(
+                user: user3,
+                height: 24.0,
+                width: 50.0,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(100.0),
+                  bottomRight: Radius.circular(100.0),
+                )),
           ],
         ));
 
-Container twoUsers(types.User user1, types.User user2) => Container(
+Container _twoUsers(types.User user1, types.User user2) => Container(
     height: 52.0,
     width: 50.0,
     decoration: const ShapeDecoration(
@@ -234,43 +147,45 @@ Container twoUsers(types.User user1, types.User user2) => Container(
     ),
     child: Column(
       children: [
-        Container(
-          height: 24.0,
-          width: 50.0,
-          decoration: BoxDecoration(
-              image: user1.imageUrl != null
-                  ? DecorationImage(image: NetworkImage(user1.imageUrl!))
-                  : null,
-              color: colors[user1.id.hashCode % colors.length],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(100.0),
-                topRight: Radius.circular(100.0),
-              )),
-          child: Center(
-            child: Text(
-              user1.firstName![0].toUpperCase(),
-              style: const TextStyle(color: Colors.white, fontSize: 10.0),
-            ),
-          ),
-        ),
-        Container(
-          height: 24.0,
-          width: 50.0,
-          decoration: BoxDecoration(
-              image: user2.imageUrl != null
-                  ? DecorationImage(image: NetworkImage(user2.imageUrl!))
-                  : null,
-              color: colors[user2.id.hashCode % colors.length],
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(100.0),
-                bottomRight: Radius.circular(100.0),
-              )),
-          child: Center(
-            child: Text(
-              user2.firstName![0].toUpperCase(),
-              style: const TextStyle(color: Colors.white, fontSize: 10.0),
-            ),
-          ),
-        ),
+        _usersContainer(
+            user: user1,
+            width: 50.0,
+            height: 24.0,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(50.0),
+              topRight: Radius.circular(50.0),
+            )),
+        _usersContainer(
+            user: user2,
+            height: 24.0,
+            width: 50.0,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(50.0),
+              bottomRight: Radius.circular(50.0),
+            )),
       ],
     ));
+
+Container _usersContainer(
+    {required types.User user,
+    required double height,
+    required double width,
+    required BorderRadiusGeometry borderRadius}) {
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(
+        image: user.imageUrl != null
+            ? DecorationImage(
+                image: NetworkImage(user.imageUrl!), fit: BoxFit.cover)
+            : null,
+        color: colors[user.id.hashCode % colors.length],
+        borderRadius: borderRadius),
+    child: Center(
+      child: Text(
+        user.imageUrl == null ? user.firstName![0].toUpperCase() : '',
+        style: const TextStyle(color: Colors.white, fontSize: 10.0),
+      ),
+    ),
+  );
+}
