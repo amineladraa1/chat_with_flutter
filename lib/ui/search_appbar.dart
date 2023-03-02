@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
+
 class SearchBar extends StatelessWidget {
   final pink = const Color(0xFFFACCCC);
   final grey = const Color(0xFFF2F2F7);
@@ -14,11 +16,11 @@ class SearchBar extends StatelessWidget {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          focusColor: pink,
-          focusedBorder: _border(pink),
-          border: _border(grey),
-          enabledBorder: _border(grey),
-          hintText: 'Start brand search',
+          focusColor: kBlueGrey,
+          focusedBorder: _border(kOrange),
+          border: _border(kBlueGrey),
+          enabledBorder: _border(kBlueGrey),
+          hintText: 'Search your chats',
           contentPadding: const EdgeInsets.symmetric(vertical: 20),
           prefixIcon: const Icon(
             Icons.search,

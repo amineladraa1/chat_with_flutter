@@ -185,9 +185,17 @@ class _SliverRoomAppBar extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return const SizedBox(
+    var adjustedShrikOffset =
+        shrinkOffset > minExtent ? minExtent : shrinkOffset;
+    double offset = (minExtent - adjustedShrikOffset) * 0.5;
+    double topPadding = MediaQuery.of(context).padding.top + 40;
+
+    return SizedBox(
       height: 280,
-      child: RoomCustomAppBar(),
+      child: RoomCustomAppBar(
+        offset: offset,
+        topPadding: topPadding,
+      ),
     );
   }
 

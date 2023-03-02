@@ -3,7 +3,10 @@ import 'package:my_chat/constants/constants.dart';
 import 'package:my_chat/ui/search_appbar.dart';
 
 class RoomCustomAppBar extends StatefulWidget {
-  const RoomCustomAppBar({super.key});
+  const RoomCustomAppBar(
+      {super.key, required this.offset, required this.topPadding});
+  final double? offset;
+  final double? topPadding;
 
   @override
   State<RoomCustomAppBar> createState() => _RoomCustomAppBarState();
@@ -36,24 +39,24 @@ class _RoomCustomAppBarState extends State<RoomCustomAppBar> {
                         'Your Rooms',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 40.0,
+                          fontSize: 30.0,
                         ),
                       ),
                       IconButton(
-                          iconSize: 100.0,
+                          iconSize: 50.0,
                           onPressed: () {},
                           icon: const Icon(
                             Icons.manage_accounts_rounded,
                             color: Colors.white,
-                            size: 100.0,
+                            size: 50.0,
                           ))
                     ],
                   ),
                 ],
               ),
             ])),
-        const Positioned(
-          top: 120,
+        Positioned(
+          top: widget.topPadding! + widget.offset!,
           left: 16,
           right: 16,
           // ignore: prefer_const_constructors
@@ -68,11 +71,12 @@ class _AppBarWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = Path();
-    final p0 = size.height * 0.75;
+    const minSize = 140.0;
+    final p1Diff = ((minSize - size.height) * 0.5).truncate().abs();
     final controlPoint = Offset(size.width * 0.4, size.height);
-    final endPoint = Offset(size.width, size.height / 2);
+    final endPoint = Offset(size.width, minSize);
 
-    path.lineTo(0.0, p0);
+    path.lineTo(0.0, size.height - p1Diff);
 
     path.quadraticBezierTo(
         controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
